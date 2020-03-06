@@ -1,0 +1,14 @@
+name: Package
+
+on:
+  release:
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Tar up the dotfiles
+      run: tar -czvf dotfiles.tar.gz dotfiles
