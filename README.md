@@ -5,5 +5,5 @@ My dotfiles paver.
 ## Installation
 
 ```shell
-curl https://raw.githubusercontent.com/walkerjam/jgdots/master/install.sh | bash
+bash <(curl -s https://raw.githubusercontent.com/walkerjam/jgdots/master/install.sh)
 ```
