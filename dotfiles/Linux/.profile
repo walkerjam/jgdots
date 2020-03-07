@@ -1,5 +1,10 @@
 
 # Linux overrides
+alias ls='ls --color=auto'
+
+alias cc='xclip -selection clipboard -i'
+alias cp='xclip -selection clipboard -o'
+
 alias sc='sudo systemctl'
 alias jc='journalctl'
 alias jcu='journalctl -u'
