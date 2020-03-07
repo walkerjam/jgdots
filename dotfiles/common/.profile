@@ -5,6 +5,9 @@ if [ -d "$HOME/.local/bin" ]; then
   PATH="$HOME/.local/bin:$PATH"
 fi
 
+# Self update
+alias jgdots='curl https://raw.githubusercontent.com/walkerjam/jgdots/master/install.sh | bash'
+
 # General shell
 alias ll='ls -la'
 alias lt='ls -latr'
