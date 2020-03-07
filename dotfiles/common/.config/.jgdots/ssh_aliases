@@ -1,3 +1,3 @@
-alias router='ssh admin@192.168.1.1'
+alias router='ssh admin@router'
 alias mbox='ssh jaime@mbox'
 alias pi2='ssh pi@pi2'
