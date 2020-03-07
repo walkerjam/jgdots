@@ -1,3 +1,10 @@
+if [ -d "$HOME/bin" ]; then
+  PATH="$HOME/bin:$PATH"
+fi
+if [ -d "$HOME/.local/bin" ]; then
+  PATH="$HOME/.local/bin:$PATH"
+fi
+
 # General shell
 alias ll='ls -la'
 alias lt='ls -latr'
@@ -37,11 +44,11 @@ alias kn='kubens'
 alias mkk='minikube kubectl'
 
 # Source extra files
-for configFile in ~/.config/.jgdots/*; do
+for configFile in $HOME/.config/.jgdots/*; do
   source $configFile
 done
 
 # Local override
-if [ -f ~/.profile_local ]; then
-  source ~/.profile_local
+if [ -f "$HOME/.profile_local" ]; then
+  source "$HOME/.profile_local"
 fi

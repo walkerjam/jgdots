@@ -19,11 +19,11 @@ if [ -f $ZSH/oh-my-zsh.sh ]; then
 fi
 
 # Source profile after zsh plugins so we can override aliases, etc.
-if [ -f ~/.profile ]; then
-  source ~/.profile
+if [ -f "$HOME/.profile" ]; then
+  source "$HOME/.profile"
 fi
 
 # Local override
-if [ -f ~/.zshrc_local ]; then
-  source ~/.zshrc_local
+if [ -f "$HOME/.zshrc_local" ]; then
+  source "$HOME/.zshrc_local"
 fi
