@@ -1,0 +1,25 @@
+name: Package
+
+on:
+  release:
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Tar up the dotfiles
+      run: tar -czvf dotfiles.tar.gz dotfiles
+
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./dotfiles.tar.gz
+        asset_name: dotfiles.tar.gz
+        asset_content_type: application/gzip
