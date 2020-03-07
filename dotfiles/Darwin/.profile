@@ -1,4 +1,4 @@
 
 # Darwin overrides
 alias cc='clipcopy'
-alias cp='clippaste'
+alias cv='clippaste'
