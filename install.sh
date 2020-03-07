@@ -24,9 +24,7 @@ function print_status() {
 }
 function print_prompt() {
   local indent=${2-}
-  if [ ! -z $VERBOSE_OUTPUT ]; then
-    echo "${blue}${indent}${1}${reset}"
-  fi
+  echo "${blue}${indent}${1}${reset}"
 }
 function print_verbose() {
   local indent=${2-}
