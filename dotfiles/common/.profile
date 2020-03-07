@@ -45,7 +45,7 @@ alias kn='kubens'
 alias mkk='minikube kubectl'
 
 # Source extra files
-for configFile in $HOME/.config/.jgdots/*; do
+for configFile in $HOME/.config/jgdots/*; do
   source $configFile
 done
 
