@@ -25,7 +25,7 @@ function print_status() {
 function print_prompt() {
   local indent=${2-}
   if [ ! -z $VERBOSE_OUTPUT ]; then
-    echo "${blue}${1}${reset}"
+    echo "${blue}${indent}${1}${reset}"
   fi
 }
 function print_verbose() {
@@ -67,6 +67,38 @@ while getopts ":lv" opt; do
       ;;
   esac
 done
+
+function prompt_continue_or_abort() {
+  local prompt="${1:-Acknowldege}"
+  local indent="${2:-}"
+  while true; do
+    print_prompt "$prompt" "$indent"
+    print_prompt "Continue [c], Abort [a]: " "$indent  "
+    read choice
+    case $choice in
+      [Cc]* ) print_verbose "Continuing" "$indent    "
+              break;;
+      [Aa]* ) print_verbose "Aborting" "$indent    "
+              exit 0;;
+      * ) ;;
+    esac
+  done
+}
+
+# Check prerequisites
+function check_prereqs() {
+  print_status "Checking pre-requisites"
+
+  print_status "Checking for oh-my-zsh" "  "
+  if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    prompt_continue_or_abort "Not found" "    "
+  fi
+
+  print_status "Checking for powerlevel9000" "  "
+  if [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel9k" ]; then
+    prompt_continue_or_abort "Not found" "    "
+  fi
+}
 
 # Get (remote or local) and then unpack the dotfiles to a temp dir.
 function get_dotfiles() {
@@ -220,6 +252,8 @@ function install_dotfiles() {
     fi
   done
 }
+
+check_prereqs
 
 # Start by fetching an archive of the dotfiles into a temp dir.  We'll do all our
 # preparations there, and once everything is clean we'll prompt to copy and overwrite
