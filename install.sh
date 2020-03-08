@@ -218,7 +218,14 @@ function install_dotfiles() {
     subdir=$( dirname $dotfileRelPath )
     print_verbose "Checking $dotfileRelPath" "    "
     existingFile="${homeDir}/${dotfileRelPath}"
-    if [ -f $existingFile ]; then
+    if [ ! -f $existingFile ]; then
+      print_verbose "Installing $existingFile" "      "
+      newDir=$( dirname $existingFile )
+      mkdir -p $newDir \
+        || exit_with_error "Failed to create $newDir" 33
+      cp $dotfile $existingFile \
+        || exit_with_error "Failed to install $existingFile" 34
+    else
       print_verbose "File already exists as $existingFile" "      "
 
       # Check if the file is actually different
@@ -234,12 +241,12 @@ function install_dotfiles() {
             [Oo]* ) print_verbose "Overwriting" "    "
                     backup_file $existingFile $DOTFILES_BACKUP_DIR
                     cp -f $dotfile $existingFile \
-                      || exit_with_error "Failed to overwrite $existingFile" 33
+                      || exit_with_error "Failed to overwrite $existingFile" 35
                     break;;
             [Aa]* ) print_verbose "Appending" "    "
                     backup_file $existingFile $DOTFILES_BACKUP_DIR
                     cat $dotfile >> $existingFile \
-                      || exit_with_error "Failed to append $existingFile" 34
+                      || exit_with_error "Failed to append $existingFile" 36
                     break;;
             [Ss]* ) print_verbose "Skipping" "    "
                     break;;
