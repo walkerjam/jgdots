@@ -6,7 +6,7 @@ if [ -d "$HOME/.local/bin" ]; then
 fi
 
 # Self update
-alias jgdots='curl https://raw.githubusercontent.com/walkerjam/jgdots/master/install.sh | bash'
+alias jgdots='bash <(curl -s https://raw.githubusercontent.com/walkerjam/jgdots/master/install.sh)'
 
 # General shell
 alias ll='ls -la'
@@ -23,9 +23,12 @@ alias gl='git log'
 alias glp='git log --oneline --abbrev-commit --all --graph --decorate --color'
 alias gf='git fetch'
 alias gfa='git fetch --all --tags'
+alias gm='git merge'
 alias gp='git pull'
 alias ga='git add'
 alias gc='git commit'
+alias gcm='git commit -m'
+alias gcam='git commit -am'
 alias gco='git checkout'
 alias gcb='git checkout -b'
 
