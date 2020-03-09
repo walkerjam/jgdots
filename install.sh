@@ -274,3 +274,4 @@ install_dotfiles $tempDir
 
 print_status "✓ Done"
 print_status "Don't forget to start a new shell to activate your changes." "  "
+print_status "Also, run ~/bin/personalize.sh 😃" "  "
