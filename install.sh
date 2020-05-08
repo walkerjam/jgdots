@@ -3,12 +3,12 @@
 # See https://github.com/walkerjam/jgdots
 #
 
-DOTFILES_URL='https://github.com/walkerjam/jgdots/releases/latest/download/dotfiles.tar.gz'
+DOTFILES_URL=${JGDOTS_DOTFILES_URL:-'https://github.com/walkerjam/jgdots/releases/latest/download/dotfiles.tar.gz'}
 DOTFILES_UNPACK_PREFIX='dotfiles'
 DOTFILES_BACKUP_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/jgdots"
 
 # If non-empty, the following var will output extra text
-VERBOSE_OUTPUT=
+VERBOSE_OUTPUT=${JGDOTS_VERBOSE_OUTPUT:-}
 # If non-empty, the following var will use the local repo for source files instead of the github asset
 INSTALL_LOCAL=
 
@@ -19,15 +19,15 @@ yellow=`tput setaf 3`
 blue=`tput setaf 4`
 reset=`tput sgr0`
 function print_status() {
-  local indent=${2-}
+  local indent=${2:-}
   echo "${green}${indent}${1}${reset}"
 }
 function print_prompt() {
-  local indent=${2-}
+  local indent=${2:-}
   echo "${blue}${indent}${1}${reset}"
 }
 function print_verbose() {
-  local indent=${2-}
+  local indent=${2:-}
   if [ ! -z $VERBOSE_OUTPUT ]; then
     echo "${yellow}${indent}${1}${reset}"
   fi
@@ -51,6 +51,10 @@ function usage() {
   echo "                 repo). This is helpful for debugging or if you've cloned the"
   echo "                 repo already."
   echo "  -v             Verbose output."
+  echo ""
+  echo "ENV vars:"
+  echo "  JGDOTS_DOTFILES_URL      Overrides the URL to fetch the dotfile tarball"
+  echo "  JGDOTS_VERBOSE_OUTPUT    Activates verbose output if set to anything non-empty"
 }
 
 # Parse command line options
@@ -218,7 +222,14 @@ function install_dotfiles() {
     subdir=$( dirname $dotfileRelPath )
     print_verbose "Checking $dotfileRelPath" "    "
     existingFile="${homeDir}/${dotfileRelPath}"
-    if [ -f $existingFile ]; then
+    if [ ! -f $existingFile ]; then
+      print_verbose "Installing $existingFile" "      "
+      newDir=$( dirname $existingFile )
+      mkdir -p $newDir \
+        || exit_with_error "Failed to create $newDir" 33
+      cp $dotfile $existingFile \
+        || exit_with_error "Failed to install $existingFile" 34
+    else
       print_verbose "File already exists as $existingFile" "      "
 
       # Check if the file is actually different
@@ -234,12 +245,12 @@ function install_dotfiles() {
             [Oo]* ) print_verbose "Overwriting" "    "
                     backup_file $existingFile $DOTFILES_BACKUP_DIR
                     cp -f $dotfile $existingFile \
-                      || exit_with_error "Failed to overwrite $existingFile" 33
+                      || exit_with_error "Failed to overwrite $existingFile" 35
                     break;;
             [Aa]* ) print_verbose "Appending" "    "
                     backup_file $existingFile $DOTFILES_BACKUP_DIR
                     cat $dotfile >> $existingFile \
-                      || exit_with_error "Failed to append $existingFile" 34
+                      || exit_with_error "Failed to append $existingFile" 36
                     break;;
             [Ss]* ) print_verbose "Skipping" "    "
                     break;;
@@ -263,3 +274,4 @@ install_dotfiles $tempDir
 
 print_status "✓ Done"
 print_status "Don't forget to start a new shell to activate your changes." "  "
+print_status "Also, run ~/bin/personalize.sh 😃" "  "
