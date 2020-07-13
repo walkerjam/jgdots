@@ -1,3 +1,6 @@
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
 if [ -d "$HOME/bin" ]; then
   PATH="$HOME/bin:$PATH"
 fi
@@ -6,7 +9,7 @@ if [ -d "$HOME/.local/bin" ]; then
 fi
 
 # Self update
-alias jgdots='bash <(curl -s https://raw.githubusercontent.com/walkerjam/jgdots/master/install.sh)'
+alias jgdots='curl -s https://raw.githubusercontent.com/walkerjam/jgdots/master/install.sh | bash -s -- -o -v'
 
 # General shell
 alias ll='ls -la'
@@ -31,6 +34,9 @@ alias gcm='git commit -m'
 alias gcam='git commit -am'
 alias gco='git checkout'
 alias gcb='git checkout -b'
+
+# Github
+alias ghw='gh repo view --web'
 
 # Docker
 alias d='docker'

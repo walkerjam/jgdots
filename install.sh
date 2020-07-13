@@ -7,10 +7,12 @@ DOTFILES_URL=${JGDOTS_DOTFILES_URL:-'https://github.com/walkerjam/jgdots/release
 DOTFILES_UNPACK_PREFIX='dotfiles'
 DOTFILES_BACKUP_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/jgdots"
 
-# If non-empty, the following var will output extra text
-VERBOSE_OUTPUT=${JGDOTS_VERBOSE_OUTPUT:-}
 # If non-empty, the following var will use the local repo for source files instead of the github asset
 INSTALL_LOCAL=
+# If non-empty, existing files will be overwritten without a prompt
+OVERWRITE=
+# If non-empty, the following var will output extra text
+VERBOSE_OUTPUT=${JGDOTS_VERBOSE_OUTPUT:-}
 
 # Convenience functions
 red=`tput setaf 1`
@@ -44,12 +46,13 @@ function exit_with_error() {
   fi
 }
 function usage() {
-  echo "Usage: $( basename $0 ) [-l] [-v]"
+  echo "Usage: $( basename $0 ) [-l] [-o] [-v]"
   echo ""
   echo "Options:"
   echo "  -l             Install from local files (instead of downloading from source"
   echo "                 repo). This is helpful for debugging or if you've cloned the"
   echo "                 repo already."
+  echo "  -o             Overwrite all existing files."
   echo "  -v             Verbose output."
   echo ""
   echo "ENV vars:"
@@ -58,9 +61,11 @@ function usage() {
 }
 
 # Parse command line options
-while getopts ":lv" opt; do
+while getopts ":lov" opt; do
   case ${opt} in
     l) INSTALL_LOCAL=1
+      ;;
+    o) OVERWRITE=1
       ;;
     v) VERBOSE_OUTPUT=1
       ;;
@@ -199,6 +204,26 @@ function backup_file() {
     || exit_with_error "Unable to create backup file $backupFile" 43
 }
 
+function overwrite_file() {
+  local newFilePath="$1"
+  if [ -z $newFilePath ]; then exit_with_error "New absolute file path was not provided" 50; fi
+  local oldFilePath="$2"
+  if [ -z $oldFilePath ]; then exit_with_error "Old absolute file path was not provided" 51; fi
+
+  cp -f $newFilePath $oldFilePath \
+    || exit_with_error "Failed to overwrite $oldFilePath" 52
+}
+
+function append_file() {
+  local newFilePath="$1"
+  if [ -z $newFilePath ]; then exit_with_error "New absolute file path was not provided" 50; fi
+  local oldFilePath="$2"
+  if [ -z $oldFilePath ]; then exit_with_error "Old absolute file path was not provided" 51; fi
+
+  cat $newFilePath >> $oldFilePath \
+    || exit_with_error "Failed to append $oldFilePath" 53
+}
+
 function install_dotfiles() {
   local targetDir="$1"
   if [ -z $targetDir ]; then exit_with_error "Target dir was not provided" 30; fi
@@ -237,26 +262,31 @@ function install_dotfiles() {
         print_verbose "Files are the same" "        "
       else
         print_verbose "Files are different" "        "
-        while true; do
-          print_prompt "$existingFile already exits"
-          print_prompt "Overwrite [o], Append [a], Skip [s]: " "  "
-          read choice
-          case $choice in
-            [Oo]* ) print_verbose "Overwriting" "    "
-                    backup_file $existingFile $DOTFILES_BACKUP_DIR
-                    cp -f $dotfile $existingFile \
-                      || exit_with_error "Failed to overwrite $existingFile" 35
-                    break;;
-            [Aa]* ) print_verbose "Appending" "    "
-                    backup_file $existingFile $DOTFILES_BACKUP_DIR
-                    cat $dotfile >> $existingFile \
-                      || exit_with_error "Failed to append $existingFile" 36
-                    break;;
-            [Ss]* ) print_verbose "Skipping" "    "
-                    break;;
-            * ) ;;
-          esac
-        done
+
+        if [ ! -z $OVERWRITE ]; then
+          print_verbose "Overwrite option is set, overwriting file automatically..." "    "
+          backup_file $existingFile $DOTFILES_BACKUP_DIR
+          overwrite_file $dotfile $existingFile
+        else
+          while true; do
+            print_prompt "$existingFile already exits"
+            print_prompt "Overwrite [o], Append [a], Skip [s]: " "  "
+            read choice
+            case $choice in
+              [Oo]* ) print_verbose "Overwriting" "    "
+                      backup_file $existingFile $DOTFILES_BACKUP_DIR
+                      overwrite_file $dotfile $existingFile
+                      break;;
+              [Aa]* ) print_verbose "Appending" "    "
+                      backup_file $existingFile $DOTFILES_BACKUP_DIR
+                      append_file $dotfile $existingFile
+                      break;;
+              [Ss]* ) print_verbose "Skipping" "    "
+                      break;;
+              * ) ;;
+            esac
+          done
+        fi
       fi
     fi
   done
