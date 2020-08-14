@@ -101,8 +101,8 @@ function check_prereqs() {
     prompt_continue_or_abort "Not found" "    "
   fi
 
-  print_status "Checking for powerlevel9000" "  "
-  if [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel9k" ]; then
+  print_status "Checking for powerlevel theme" "  "
+  if [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel9k" ] && [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
     prompt_continue_or_abort "Not found" "    "
   fi
 }

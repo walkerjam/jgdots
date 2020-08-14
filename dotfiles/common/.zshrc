@@ -1,6 +1,12 @@
 export ZSH=$HOME/.oh-my-zsh
 
-ZSH_THEME='powerlevel9k/powerlevel9k'
+if [ -d "$HOME/.oh-my-zsh/custom/themes/powerlevel9k" ]; then
+  ZSH_THEME='powerlevel9k/powerlevel9k'
+fi
+if [ -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
+  ZSH_THEME='powerlevel10k/powerlevel10k'
+fi
+
 POWERLEVEL9K_MODE='nerdfont-complete'
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon context dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time time)
