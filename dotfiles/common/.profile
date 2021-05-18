@@ -35,8 +35,9 @@ alias gcam='git commit -am'
 alias gco='git checkout'
 alias gcb='git checkout -b'
 
-# Github
+# Github / Azure DevOps
 alias ghw='gh repo view --web'
+alias adw='az repos show -r `git remote -v | grep "(fetch)" | awk '"'"'{print $2}'"'"' | awk -F'"'"'/'"'"' '"'"'{print $NF}'"'"'` --open 1>/dev/null 2>/dev/null'
 
 # Docker
 alias d='docker'
