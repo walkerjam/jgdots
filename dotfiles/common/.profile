@@ -17,6 +17,7 @@ alias lt='ls -latr'
 alias grep='grep --color=auto'
 alias hosts='sudo vim /etc/hosts'
 alias profile='vim ~/.profile && source ~/.profile'
+alias sa='eval $(ssh-agent) && ssh-add'
 
 # Git
 alias g='git'
